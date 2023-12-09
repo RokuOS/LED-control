@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ESP8266 WebSocket Control</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+      }
+
+      .container {
+        margin: 20px;
+      }
+
+      .status {
+        font-weight: bold;
+      }
+
+      .control-group {
+        margin: 10px 0;
+      }
+
+      label {
+        display: inline-block;
+        width: 150px;
+        text-align: right;
+        margin-right: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>ESP8266 WebSocket Control</h1>
+
+      <div class="control-group">
+        <label>Trang thai ket noi:</label>
+        <span id="status" class="status">Khong</span>
+      </div>
+      <div>
+        <span>Cong tac:</span>
+        <input id="btn" type="checkbox" />
+      </div>
+      <div>
+        <span>Cong tac1:</span>
+        <input id="btn1" type="checkbox" />
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      var statusElement = document.getElementById("status");
+      var switchBtn = document.getElementById("btn");
+      var switchBtn1 = document.getElementById("btn1");
+      var url = window.location.host;
+      var ws = new WebSocket("ws://" + url + "/web-client");
+      var check = false;
+
+      ws.onopen = function () {
+        statusElement.innerHTML = "Co";
+      };
+
+      ws.onclose = function () {
+        statusElement.innerHTML = "Khong";
+      };
+
+      switchBtn.onchange = function () {
+        if (switchBtn.checked == true) {
+          check = true;
+        } else {
+          check = false;
+        }
+        const data = {
+          switch: check ? "LED1_ON" : "LED1_OFF",
+        };
+        ws.send(JSON.stringify(data));
+      };
+      switchBtn1.onchange = function () {
+        if (switchBtn1.checked == true) {
+          check = true;
+        } else {
+          check = false;
+        }
+        const data = {
+          switch: check ? "LED2_ON" : "LED2_OFF",
+        };
+        ws.send(JSON.stringify(data));
+      };
+    </script>
+  </body>
+</html>
